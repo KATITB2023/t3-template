@@ -5,8 +5,8 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import { env } from "~/env.mjs";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { compare } from "bcrypt";
 import { prisma } from "~/server/db";
 
 /**
@@ -36,21 +36,25 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    // The maximum age of the NextAuth.js issued JWT in seconds.
+    // Defaults to `session.maxAge`.
+    maxAge: 60 * 60 * 24 * 30,
+  },
   callbacks: {
-    session: ({ session, user }) => ({
+    session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        id: token.id,
       },
     }),
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
     /**
      * ...add more providers here.
      *
@@ -60,6 +64,53 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    CredentialsProvider({
+      name: "Credentials",
+      // `credentials` is used to generate a form on the sign in page.
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      // You can pass any HTML attribute to the <input> tag through the object.
+      credentials: {
+        nim: {
+          label: "NIM",
+          type: "text",
+          placeholder: "13520065",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "password",
+        },
+      },
+      async authorize(credentials) {
+        // Add logic here to look up the user from the credentials supplied
+        // You can also use the `req` object to access additional parameters
+        // return { id: 1, name: "J Smith", email: "jsmith@example" };
+        if (!credentials) {
+          throw new Error("No credentials");
+        }
+
+        const { nim, password } = credentials;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            nim,
+          },
+        });
+        if (!user) {
+          throw new Error("User hasn't registered yet");
+        }
+
+        const isValid = await compare(password, user.passwordHash);
+        if (!isValid) {
+          throw new Error("Invalid password");
+        }
+
+        return {
+          id: user.id,
+        };
+      },
+    }),
   ],
 };
 
