@@ -11,8 +11,16 @@ export default createNextApiHandler({
     env.NODE_ENV === "development"
       ? ({ path, error }) => {
           console.error(
-            `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+            `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
           );
         }
       : undefined,
+  responseMeta() {
+    return {
+      // cache request for a period of time + revalidate once every second
+      headers: {
+        "Cache-Control": `s-maxage=1, stale-while-revalidate=${env.STALE_WHILE_REVALIDATE}`,
+      },
+    };
+  },
 });
