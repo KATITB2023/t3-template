@@ -17,9 +17,8 @@ export default createNextApiHandler({
       : undefined,
   responseMeta() {
     return {
-      // cache request for a period of time + revalidate once every second
       headers: {
-        "Cache-Control": `s-maxage=1, stale-while-revalidate=${env.STALE_WHILE_REVALIDATE}`,
+        "Cache-Control": `s-maxage=${env.S_MAXAGE}, stale-while-revalidate=${env.STALE_WHILE_REVALIDATE}`,
       },
     };
   },
