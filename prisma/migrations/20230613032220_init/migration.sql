@@ -1,10 +1,12 @@
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "nim" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
-    "image" TEXT,
+    "role" "UserRole" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -13,6 +15,3 @@ CREATE TABLE "User" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_nim_key" ON "User"("nim");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
