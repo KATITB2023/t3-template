@@ -106,7 +106,10 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
-/** Reusable middleware that enforces users are logged in before running the procedure. */
+/** Reusable middleware that enforces users are logged in before running the procedure.
+ *
+ * @see https://trpc.io/docs/middleware
+ */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -119,6 +122,32 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+/** Reusable middleware that enforces users have admin role before running the procedure.
+ *
+ * It is safe to use despite the `unstable` prefix.
+ *
+ * @see https://trpc.io/docs/middleware
+ */
+const isAdmin = enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
+  if (ctx.session.user.role !== "ADMIN") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next();
+});
+
+/** Reusable middleware that enforces users have user role before running the procedure.
+ *
+ * It is safe to use despite the `unstable` prefix.
+ *
+ * @see https://trpc.io/docs/middleware
+ */
+const isUser = enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
+  if (ctx.session.user.role !== "USER") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next();
+});
+
 /**
  * Protected (authenticated) procedure
  *
@@ -128,3 +157,23 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+/**
+ * Protected (admin) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to admin role users, use this. It verifies
+ * the session is valid dan guarantees that the role is admin.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const adminProcedure = t.procedure.use(isAdmin);
+
+/**
+ * Protected (user) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to user role users, use this. It verifies
+ * the session is valid dan guarantees that the role is user.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const userProcedure = t.procedure.use(isUser);
