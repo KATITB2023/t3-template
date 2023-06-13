@@ -4,11 +4,13 @@ import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
+  DefaultUser,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { prisma } from "~/server/db";
 import { UserRole } from "@prisma/client";
+import { DefaultJWT } from "next-auth/jwt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -25,7 +27,8 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 
-  interface User {
+  interface User extends DefaultUser {
+    id: string;
     // ...other properties
     role: UserRole;
   }
@@ -51,8 +54,16 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: token.id,
+        role: token.role,
       },
     }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
