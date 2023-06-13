@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { env } from "~/env.mjs";
 
-// This is a helper function that instantiates Prisma.
+// This is a helper function that instantiates Prisma
 const instantiatePrisma = () =>
   new PrismaClient({
     log:

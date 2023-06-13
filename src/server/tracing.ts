@@ -1,7 +1,7 @@
 import { Tracer, trace } from "@opentelemetry/api";
 import { otelSetup } from "~/server/setup";
 
-// This is a helper function that instantiates Prisma.
+// This is a helper function that instantiates OpenTelemetry Tracer
 const instantiateTracer = () => {
   otelSetup();
 

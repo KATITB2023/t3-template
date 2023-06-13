@@ -24,6 +24,7 @@ export function otelSetup() {
 
   // Configure the trace provider
   const provider = new BasicTracerProvider({
+    // Sampling with 10% of traces in production
     sampler: new TraceIdRatioBasedSampler(
       env.NODE_ENV === "production" ? 0.1 : 1
     ),
