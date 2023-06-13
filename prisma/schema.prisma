@@ -25,6 +25,13 @@ model User {
     updatedAt    DateTime @updatedAt
 }
 
+model Example {
+    id        String   @id @default(cuid())
+    message   String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 enum UserRole {
     ADMIN
     USER
