@@ -1,28 +1,37 @@
-import { Storage } from "@google-cloud/storage";
+import { type Options } from "formidable";
+import type VolatileFile from "formidable/VolatileFile";
+import { PassThrough } from "stream";
 import { env } from "~/env.mjs";
+import { storage } from "~/server/storage";
 
-export enum FolderEnum {
-  PROFILE = "profile",
-  ASSIGNMENT = "assignment",
-}
-
-export const uploadFile = async (folder: FolderEnum, file: File) => {
-  const storage = new Storage();
-
+const createWriteStream = (filename: string, contentType?: string) => {
   const bucketName = env.BUCKET_NAME;
   const bucket = storage.bucket(bucketName);
-  const fileDestination = `${folder}/${file.name}`;
+  const ref = bucket.file(filename);
 
-  // Create a new blob in the bucket and upload the file data.
-  const arrayBuffer = await file.arrayBuffer();
-  const fileBuffer = Buffer.from(arrayBuffer);
+  const stream = ref.createWriteStream({
+    contentType,
+    gzip: true,
+    resumable: true,
+    validation: true,
+  });
 
-  // Upload the file to the bucket
-  const storageFile = bucket.file(fileDestination);
-  await storageFile.save(fileBuffer);
+  return stream;
+};
 
-  // Get the URL of the uploaded file
-  const fileUrl = `https://storage.googleapis.com/${bucketName}/${fileDestination}`;
+export const uploadStream: Options["fileWriteStreamHandler"] = (
+  file?: VolatileFile
+) => {
+  const pass = new PassThrough();
+  const fileJSON = file?.toJSON();
 
-  return fileUrl;
+  if (!fileJSON) return pass;
+
+  const stream = createWriteStream(
+    fileJSON.originalFilename ?? fileJSON.newFilename,
+    fileJSON.mimetype ?? undefined
+  );
+  pass.pipe(stream);
+
+  return pass;
 };
