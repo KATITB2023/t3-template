@@ -14,11 +14,44 @@ export const exampleRouter = createTRPCRouter({
       };
     }),
 
-  getExample: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.example.findMany();
-  }),
-
   getSecretMessage: protectedProcedure.query(() => {
     return "You can now see this secret message!";
   }),
+
+  getOneExample: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.example.findUnique({
+        where: { id: input.id },
+      });
+    }),
+
+  getAllExample: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.example.findMany();
+  }),
+
+  createExample: publicProcedure
+    .input(z.object({ message: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.example.create({
+        data: { message: input.message },
+      });
+    }),
+
+  updateExample: publicProcedure
+    .input(z.object({ id: z.string(), message: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.example.update({
+        where: { id: input.id },
+        data: { message: input.message },
+      });
+    }),
+
+  deleteExample: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.example.delete({
+        where: { id: input.id },
+      });
+    }),
 });

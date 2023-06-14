@@ -3,7 +3,7 @@
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol", "metrics", "tracing"]
+    previewFeatures = ["jsonProtocol", "metrics", "tracing", "extendedWhereUnique"]
     binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -23,6 +23,8 @@ model User {
     role         UserRole @default(USER)
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
+    version      Int      @default(0) // Comment this line if you don't want optimistic concurrency control
+    isDeleted    Boolean  @default(false) // Comment this line if you don't want soft delete
 }
 
 model Example {
@@ -30,6 +32,8 @@ model Example {
     message   String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    version   Int      @default(0) // Comment this line if you don't want optimistic concurrency control
+    isDeleted Boolean  @default(false) // Comment this line if you don't want soft delete
 }
 
 enum UserRole {

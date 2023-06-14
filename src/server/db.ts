@@ -1,12 +1,31 @@
 import { PrismaClient } from "@prisma/client";
+import {
+  softDeleteChangeFind,
+  softDeleteChangeUpdate,
+  softDeleteChangeDelete,
+  versioningChangeUpdate,
+} from "~/server/prisma/middleware";
 import { env } from "~/env.mjs";
 
 // This is a helper function that instantiates Prisma
-const instantiatePrisma = () =>
-  new PrismaClient({
+const instantiatePrisma = () => {
+  const prisma = new PrismaClient({
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
+
+  // Add middleware to handle soft deletes
+  // Comment this out to disable soft deletes
+  prisma.$use(softDeleteChangeFind);
+  prisma.$use(softDeleteChangeUpdate);
+  prisma.$use(softDeleteChangeDelete);
+
+  // Add middleware to handle optimistic concurrency control
+  // Comment this out to disable optimistic concurrency control
+  prisma.$use(versioningChangeUpdate);
+
+  return prisma;
+};
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

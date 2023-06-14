@@ -7,6 +7,7 @@
  * need to use are documented accordingly near the end.
  */
 
+import { UserRole } from "@prisma/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
@@ -131,7 +132,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/middleware
  */
 const isAdmin = enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
-  if (ctx.session.user.role !== "ADMIN") {
+  if (ctx.session.user.role !== UserRole.ADMIN) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
   return next();
@@ -144,7 +145,7 @@ const isAdmin = enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
  * @see https://trpc.io/docs/middleware
  */
 const isUser = enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
-  if (ctx.session.user.role !== "USER") {
+  if (ctx.session.user.role !== UserRole.USER) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
   return next();
