@@ -32,6 +32,7 @@ export const env = createEnv({
       // STALE_WHILE_REVALIDATE must be a positive integer
       z.number().int().positive().min(1)
     ),
+    BUCKET_NAME: z.string().min(1),
   },
 
   /**
@@ -54,6 +55,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     S_MAXAGE: process.env.S_MAXAGE,
     STALE_WHILE_REVALIDATE: process.env.STALE_WHILE_REVALIDATE,
+    BUCKET_NAME: process.env.BUCKET_NAME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

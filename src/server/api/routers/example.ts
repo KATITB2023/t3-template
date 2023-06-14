@@ -30,7 +30,7 @@ export const exampleRouter = createTRPCRouter({
           return example;
         },
         {
-          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted,
+          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
         }
       );
     }),
@@ -42,7 +42,7 @@ export const exampleRouter = createTRPCRouter({
         return examples;
       },
       {
-        isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted,
+        isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
       }
     );
   }),
@@ -58,7 +58,7 @@ export const exampleRouter = createTRPCRouter({
           return example;
         },
         {
-          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted,
+          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
         }
       );
     }),
@@ -75,7 +75,7 @@ export const exampleRouter = createTRPCRouter({
           return example;
         },
         {
-          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted,
+          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
         }
       );
     }),
@@ -91,7 +91,7 @@ export const exampleRouter = createTRPCRouter({
           return example;
         },
         {
-          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted,
+          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
         }
       );
     }),
