@@ -15,7 +15,7 @@ import { Resource } from "@opentelemetry/resources";
 import { env } from "~/env.mjs";
 
 // Export the tracing
-export function otelSetup() {
+export const otelSetup = () => {
   const contextManager = new AsyncHooksContextManager().enable();
   api.context.setGlobalContextManager(contextManager);
 
@@ -49,4 +49,4 @@ export function otelSetup() {
 
   // Register the provider
   provider.register();
-}
+};
