@@ -5,31 +5,15 @@ export const softDeleteChangeFind: Prisma.Middleware = async (params, next) => {
     params.args = {};
   }
 
-  if (params.action === "findUnique" || params.action === "findFirst") {
-    // Change to findFirst - you cannot filter
-    // by anything except ID / unique with findUnique
-    params.action = "findFirst";
-
+  if (
+    params.action === "findUnique" ||
+    params.action === "findFirst" ||
+    params.action === "findMany"
+  ) {
     // Add 'isDeleted' filter
     // ID filter maintained
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.where) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (params.args.where.isDeleted === undefined) {
-        // Exclude isDeleted records if they have not been explicitly requested
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        params.args.where["isDeleted"] = false;
-      }
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args["where"] = { isDeleted: false };
-    }
-  }
-
-  if (params.action === "findMany") {
-    // Find many queries
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.where) {
+    if (params.args.where !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (params.args.where.isDeleted === undefined) {
         // Exclude isDeleted records if they have not been explicitly requested
@@ -54,24 +38,13 @@ export const softDeleteChangeUpdate: Prisma.Middleware = async (
     params.args = {};
   }
 
-  if (params.action === "update") {
-    // Change to updateMany - you cannot filter
-    // by anything except ID / unique with findUnique
-    params.action = "updateMany";
-
+  if (
+    params.action === "update" ||
+    params.action === "updateMany" ||
+    params.action === "upsert"
+  ) {
     // Add 'isDeleted' filter
     // ID filter maintained
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.where !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args.where["isDeleted"] = false;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args["where"] = { isDeleted: false };
-    }
-  }
-
-  if (params.action === "updateMany") {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.where !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -94,36 +67,15 @@ export const softDeleteChangeDelete: Prisma.Middleware = async (
     params.args = {};
   }
 
-  if (params.action === "delete") {
-    // Change to updateMany - you cannot filter
-    // by anything except ID / unique with findUnique
-    params.action = "updateMany";
-
-    // Add 'isDeleted' filter
-    // ID filter maintained
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.where !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args.where["isDeleted"] = false;
+  if (params.action === "delete" || params.action === "deleteMany") {
+    if (params.action === "delete") {
+      // Change to updateMany - you cannot filter
+      // by anything except ID / unique with findUnique
+      params.action = "update";
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args["where"] = { isDeleted: false };
+      // Delete many queries
+      params.action = "updateMany";
     }
-
-    // Set isDeleted to true
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.data !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args.data["isDeleted"] = true;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args["data"] = { isDeleted: true };
-    }
-  }
-
-  if (params.action === "deleteMany") {
-    // Delete many queries
-    params.action = "updateMany";
 
     // Add 'isDeleted' filter
     // ID filter maintained
@@ -159,19 +111,11 @@ export const versioningChangeUpdate: Prisma.Middleware = async (
     params.args = {};
   }
 
-  if (params.action === "update") {
-    // Increment version
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (params.args.data !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args.data["version"] = { increment: 1 };
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      params.args["data"] = { version: { increment: 1 } };
-    }
-  }
-
-  if (params.action === "updateMany") {
+  if (
+    params.action === "update" ||
+    params.action === "updateMany" ||
+    params.action === "upsert"
+  ) {
     // Increment version
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.data !== undefined) {
