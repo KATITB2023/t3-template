@@ -4,6 +4,7 @@ import { PassThrough } from "stream";
 import { env } from "~/env.mjs";
 import { storage } from "~/server/storage";
 
+// This is a helper function to create write stream to Google Cloud Storage
 const createWriteStream = (filename: string, contentType?: string) => {
   const bucketName = env.BUCKET_NAME;
   const bucket = storage.bucket(bucketName);
@@ -23,10 +24,10 @@ export const uploadStream: Options["fileWriteStreamHandler"] = (
   file?: VolatileFile
 ) => {
   const pass = new PassThrough();
+
+  if (!file) return pass;
+
   const fileJSON = file?.toJSON();
-
-  if (!fileJSON) return pass;
-
   const stream = createWriteStream(
     fileJSON.originalFilename ?? fileJSON.newFilename,
     fileJSON.mimetype ?? undefined
