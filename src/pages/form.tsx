@@ -1,6 +1,7 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { api } from "~/utils/api";
+import { FolderEnum } from "~/utils/file";
 
 const UploadComponent = () => {
   const [file, setFile] = React.useState<File | null>(null);
@@ -12,6 +13,7 @@ const UploadComponent = () => {
     const fileUUID = uuidv4();
 
     const url = await generateURLForUpload.mutateAsync({
+      folder: FolderEnum.ASSIGNMENT,
       filename: `${fileUUID}-${file.name}`,
       contentType: file.type,
     });

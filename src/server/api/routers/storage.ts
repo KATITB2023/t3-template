@@ -6,6 +6,7 @@ import {
 } from "~/server/api/trpc";
 import { storage } from "~/server/storage";
 import { env } from "~/env.mjs";
+import { FolderEnum } from "~/utils/file";
 
 export const storageRouter = createTRPCRouter({
   generateURLForDownload: publicProcedure
@@ -26,7 +27,14 @@ export const storageRouter = createTRPCRouter({
 
   generateURLForUpload: protectedProcedure
     .input(
-      z.object({ filename: z.string(), contentType: z.string().optional() })
+      z.object({
+        folder: z.union([
+          z.literal(FolderEnum.PROFILE),
+          z.literal(FolderEnum.ASSIGNMENT),
+        ]),
+        filename: z.string(),
+        contentType: z.string().optional(),
+      })
     )
     .mutation(async ({ input }) => {
       const bucketname = env.BUCKET_NAME;
