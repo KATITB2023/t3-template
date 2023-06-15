@@ -10,11 +10,19 @@ import { FolderEnum } from "~/utils/file";
 
 export const storageRouter = createTRPCRouter({
   generateURLForDownload: publicProcedure
-    .input(z.object({ filename: z.string() }))
+    .input(
+      z.object({
+        folder: z.union([
+          z.literal(FolderEnum.PROFILE),
+          z.literal(FolderEnum.ASSIGNMENT),
+        ]),
+        filename: z.string(),
+      })
+    )
     .mutation(async ({ input }) => {
       const bucketname = env.BUCKET_NAME;
       const bucket = storage.bucket(bucketname);
-      const ref = bucket.file(input.filename);
+      const ref = bucket.file(`${input.folder}/${input.filename}`);
 
       const [url] = await ref.getSignedUrl({
         version: "v4",
@@ -39,7 +47,7 @@ export const storageRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const bucketname = env.BUCKET_NAME;
       const bucket = storage.bucket(bucketname);
-      const ref = bucket.file(input.filename);
+      const ref = bucket.file(`${input.folder}/${input.filename}`);
 
       const [url] = await ref.getSignedUrl({
         version: "v4",

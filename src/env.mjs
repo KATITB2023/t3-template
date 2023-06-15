@@ -32,6 +32,7 @@ export const env = createEnv({
       // STALE_WHILE_REVALIDATE must be a positive integer
       z.number().int().positive().min(1)
     ),
+    GOOGLE_APPLICATION_CREDENTIALS: z.string().min(1),
     BUCKET_NAME: z.string().min(1),
     URL_EXPIRATION_TIME: z.preprocess(
       // If URL_EXPIRATION_TIME is not set, set it to 1 hour
@@ -61,6 +62,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     S_MAXAGE: process.env.S_MAXAGE,
     STALE_WHILE_REVALIDATE: process.env.STALE_WHILE_REVALIDATE,
+    GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     BUCKET_NAME: process.env.BUCKET_NAME,
     URL_EXPIRATION_TIME: process.env.URL_EXPIRATION_TIME,
   },
