@@ -1,19 +1,28 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { fileHandling } from "~/utils/api";
+import { api } from "~/utils/api";
 
 const UploadComponent = () => {
   const [file, setFile] = React.useState<File | null>(null);
+  const generateURLForUpload = api.storage.generateURLForUpload.useMutation();
 
   const handleOnClick = async () => {
     if (!file) return;
 
     const fileUUID = uuidv4();
-    const renamedFile = new File([file], `${fileUUID}-${file.name}`, {
-      type: file.type,
+
+    const url = await generateURLForUpload.mutateAsync({
+      filename: `${fileUUID}-${file.name}`,
+      contentType: file.type,
     });
 
-    const response = await fileHandling.upload(renamedFile);
+    const response = await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+    });
 
     alert(response);
   };

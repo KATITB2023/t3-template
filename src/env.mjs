@@ -33,6 +33,12 @@ export const env = createEnv({
       z.number().int().positive().min(1)
     ),
     BUCKET_NAME: z.string().min(1),
+    URL_EXPIRATION_TIME: z.preprocess(
+      // If URL_EXPIRATION_TIME is not set, set it to 1 hour
+      (str) => (str ? +str : 60 * 60 * 1000),
+      // URL_EXPIRATION_TIME must be a positive integer
+      z.number().int().positive().min(1)
+    ),
   },
 
   /**
@@ -56,6 +62,7 @@ export const env = createEnv({
     S_MAXAGE: process.env.S_MAXAGE,
     STALE_WHILE_REVALIDATE: process.env.STALE_WHILE_REVALIDATE,
     BUCKET_NAME: process.env.BUCKET_NAME,
+    URL_EXPIRATION_TIME: process.env.URL_EXPIRATION_TIME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
