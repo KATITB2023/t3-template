@@ -16,6 +16,22 @@ export const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+/** A set of fetch API for uploading files to Google Cloud Storage */
+/** TODO: Implementasikan ini */
+export const fileHandling = {
+  async upload(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(`${getBaseUrl()}/api/file/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    return response;
+  },
+};
+
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
   config() {

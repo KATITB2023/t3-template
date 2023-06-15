@@ -1,5 +1,6 @@
 import React from "react";
-import { getBaseUrl } from "~/utils/api";
+import { v4 as uuidv4 } from "uuid";
+import { fileHandling } from "~/utils/api";
 
 const UploadComponent = () => {
   const [file, setFile] = React.useState<File | null>(null);
@@ -7,15 +8,12 @@ const UploadComponent = () => {
   const handleOnClick = async () => {
     if (!file) return;
 
-    // TODO: Ubah filename menjadi UUID v4
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await fetch(`${getBaseUrl()}/api/file/upload`, {
-      method: "POST",
-      body: formData,
+    const fileUUID = uuidv4();
+    const renamedFile = new File([file], fileUUID, {
+      type: file.type,
     });
+
+    const response = await fileHandling.upload(renamedFile);
 
     alert(response);
   };
