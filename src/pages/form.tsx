@@ -9,7 +9,7 @@ const UploadComponent = () => {
     if (!file) return;
 
     const fileUUID = uuidv4();
-    const renamedFile = new File([file], fileUUID, {
+    const renamedFile = new File([file], `${fileUUID}-${file.name}`, {
       type: file.type,
     });
 
