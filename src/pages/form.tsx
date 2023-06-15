@@ -28,6 +28,8 @@ const UploadComponent = () => {
       },
     });
 
+    /** TODO: Nama file disimpan menggunakan tRPC */
+
     alert(response);
   };
 

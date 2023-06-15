@@ -10,6 +10,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { prisma } from "~/server/db";
 import { type UserRole } from "@prisma/client";
+import { env } from "~/env.mjs";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -44,7 +45,7 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     // The maximum age of the NextAuth.js issued JWT in seconds.
     // Defaults to `session.maxAge`.
-    maxAge: 60 * 60 * 24 * 30,
+    maxAge: env.SESSION_MAXAGE,
   },
   callbacks: {
     session: ({ session, token }) => ({

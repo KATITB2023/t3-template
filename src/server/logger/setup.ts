@@ -24,9 +24,9 @@ export const otelSetup = () => {
 
   // Configure the trace provider
   const provider = new BasicTracerProvider({
-    // Sampling with 10% of traces in production
+    // Sampling with set percentage of traces in production
     sampler: new TraceIdRatioBasedSampler(
-      env.NODE_ENV === "production" ? 0.1 : 1
+      env.NODE_ENV === "production" ? env.SAMPLER_RATIO : 1
     ),
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: "test-tracing-service",
