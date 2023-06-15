@@ -1,5 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
+import sanitize from "sanitize-filename";
 import { api } from "~/utils/api";
 import { FolderEnum } from "~/utils/file";
 
@@ -11,10 +12,11 @@ const UploadComponent = () => {
     if (!file) return;
 
     const fileUUID = uuidv4();
+    const sanitizedFileName = sanitize(file.name);
 
     const url = await generateURLForUpload.mutateAsync({
       folder: FolderEnum.ASSIGNMENT,
-      filename: `${fileUUID}-${file.name}`,
+      filename: `${fileUUID}-${sanitizedFileName}`,
       contentType: file.type,
     });
 
