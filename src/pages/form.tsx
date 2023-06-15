@@ -22,7 +22,7 @@ const UploadComponent = () => {
       method: "PUT",
       body: file,
       headers: {
-        "Content-Type": "application/octet-stream",
+        "Content-Type": file.type,
       },
     });
 
