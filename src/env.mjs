@@ -51,6 +51,12 @@ export const env = createEnv({
       // URL_EXPIRATION_TIME must be a positive integer
       z.number().int().positive().min(1)
     ),
+    BUCKET_CORS_EXPIRATION_TIME: z.preprocess(
+      // If BUCKET_CORS_EXPIRATION_TIME is not set, set it to 1 hour
+      (str) => (str ? +str : 60 * 60),
+      // BUCKET_CORS_EXPIRATION_TIME must be a positive integer
+      z.number().int().positive().min(1)
+    ),
   },
 
   /**
@@ -78,6 +84,7 @@ export const env = createEnv({
     GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     BUCKET_NAME: process.env.BUCKET_NAME,
     URL_EXPIRATION_TIME: process.env.URL_EXPIRATION_TIME,
+    BUCKET_CORS_EXPIRATION_TIME: process.env.BUCKET_CORS_EXPIRATION_TIME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

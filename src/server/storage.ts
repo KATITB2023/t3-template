@@ -1,6 +1,6 @@
 import { Storage } from "@google-cloud/storage";
 
-// This is a helper function that instantiates Google Cloud Storage
+// This is a helper function that instantiates Google Cloud Storage bucket
 const instantiateStorage = () => {
   const storage = new Storage();
 
