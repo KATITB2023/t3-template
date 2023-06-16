@@ -6,15 +6,11 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { bucket } from "~/server/bucket";
 import { FolderEnum } from "~/utils/file";
+import { bucket } from "~/server/bucket";
 import { env } from "~/env.mjs";
 
 export const storageRouter = createTRPCRouter({
-  getMetadata: publicProcedure.query(async () => {
-    return await bucket.getMetadata();
-  }),
-
   generateURLForDownload: publicProcedure
     .input(
       z.object({
