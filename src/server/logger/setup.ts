@@ -44,7 +44,7 @@ export const otelSetup = () => {
   // Register your auto-instrumentors
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: [new PrismaInstrumentation()],
+    instrumentations: [new PrismaInstrumentation({ middleware: true })],
   });
 
   // Register the provider

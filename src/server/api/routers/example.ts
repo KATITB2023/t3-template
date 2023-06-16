@@ -20,7 +20,7 @@ export const exampleRouter = createTRPCRouter({
   }),
 
   getOneExample: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.$transaction(
         async (tx) => {
@@ -64,7 +64,7 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   updateExample: protectedProcedure
-    .input(z.object({ id: z.string(), message: z.string() }))
+    .input(z.object({ id: z.string(), message: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.$transaction(
         async (tx) => {
@@ -81,7 +81,7 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   deleteExample: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.$transaction(
         async (tx) => {
