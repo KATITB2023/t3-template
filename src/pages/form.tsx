@@ -61,7 +61,9 @@ const UploadComponent = () => {
         <input type="file" onChange={handleInputChange} />
         <button onClick={() => void handleOnClick()}>Upload</button>
         <p>Progress: {progress}</p>
-        <Link href={downloadURL ?? ""} target="_blank"></Link>
+        <Link href={downloadURL ?? ""} target="_blank" download>
+          Download
+        </Link>
       </main>
     </>
   );

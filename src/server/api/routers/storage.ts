@@ -6,11 +6,15 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { storage } from "~/server/storage";
+import { bucket } from "~/server/bucket";
 import { FolderEnum } from "~/utils/file";
 import { env } from "~/env.mjs";
 
 export const storageRouter = createTRPCRouter({
+  getMetadata: publicProcedure.query(async () => {
+    return await bucket.getMetadata();
+  }),
+
   generateURLForDownload: publicProcedure
     .input(
       z.object({
@@ -22,13 +26,10 @@ export const storageRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      const bucketname = env.BUCKET_NAME;
-      const bucket = storage.bucket(bucketname);
-
-      bucket.setCorsConfiguration([
+      await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
-          method: ["GET"],
+          method: ["GET", "PUT"],
           origin: ["*"],
           responseHeader: ["Content-Type"],
         },
@@ -63,13 +64,10 @@ export const storageRouter = createTRPCRouter({
       const sanitizedFileName = sanitize(input.filename);
       const sanitizedFilename = `${fileUUID}-${sanitizedFileName}`;
 
-      const bucketname = env.BUCKET_NAME;
-      const bucket = storage.bucket(bucketname);
-
-      bucket.setCorsConfiguration([
+      await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
-          method: ["PUT"],
+          method: ["GET", "PUT"],
           origin: ["*"],
           responseHeader: ["Content-Type"],
         },
