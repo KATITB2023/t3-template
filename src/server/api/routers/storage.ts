@@ -97,7 +97,6 @@ export const storageRouter = createTRPCRouter({
           z.literal(FolderEnum.ASSIGNMENT),
         ]),
         filename: z.string(),
-        contentType: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
