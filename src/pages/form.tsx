@@ -60,7 +60,7 @@ const UploadComponent = () => {
       <main>
         <input type="file" onChange={handleInputChange} />
         <button onClick={() => void handleOnClick()}>Upload</button>
-        <p>Progress: {100 * progress}%</p>
+        <p>Progress: {Math.round(100 * progress)}%</p>
         <Link href={downloadURL ?? ""} target="_blank">
           Download
         </Link>
