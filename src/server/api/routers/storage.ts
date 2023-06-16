@@ -6,7 +6,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { FolderEnum } from "~/utils/file";
+import { AllowableFileTypeEnum, FolderEnum } from "~/utils/file";
 import { bucket } from "~/server/bucket";
 import { env } from "~/env.mjs";
 
@@ -52,7 +52,12 @@ export const storageRouter = createTRPCRouter({
           z.literal(FolderEnum.ASSIGNMENT),
         ]),
         filename: z.string(),
-        contentType: z.string().optional(),
+        contentType: z.union([
+          z.literal(AllowableFileTypeEnum.PDF),
+          z.literal(AllowableFileTypeEnum.PNG),
+          z.literal(AllowableFileTypeEnum.JPEG),
+          z.literal(AllowableFileTypeEnum.JPG),
+        ]),
       })
     )
     .mutation(async ({ input }) => {

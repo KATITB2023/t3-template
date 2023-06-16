@@ -5,16 +5,24 @@ export enum FolderEnum {
   ASSIGNMENT = "assignment",
 }
 
+export enum AllowableFileTypeEnum {
+  PDF = "application/pdf",
+  PNG = "image/png",
+  JPEG = "image/jpeg",
+  JPG = "image/jpg",
+}
+
 export const uploadFile = async (
   url: string,
   file: File,
+  type: AllowableFileTypeEnum,
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void
 ) => {
   const axiosInstance = axios.create();
 
   await axiosInstance.put<null>(url, file, {
     headers: {
-      "Content-Type": file.type,
+      "Content-Type": type,
     },
     onUploadProgress,
   });

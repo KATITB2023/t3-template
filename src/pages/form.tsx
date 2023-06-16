@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { FolderEnum, uploadFile } from "~/utils/file";
+import { AllowableFileTypeEnum, FolderEnum, uploadFile } from "~/utils/file";
 
 const UploadComponent = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -20,10 +20,10 @@ const UploadComponent = () => {
       await generateURLForUpload.mutateAsync({
         folder: FolderEnum.ASSIGNMENT,
         filename: file.name,
-        contentType: file.type,
+        contentType: AllowableFileTypeEnum.PDF,
       });
 
-    await uploadFile(uploadURL, file, (event) => {
+    await uploadFile(uploadURL, file, AllowableFileTypeEnum.PDF, (event) => {
       if (!event.total) return;
 
       const newProgress = event.loaded / event.total;
@@ -58,7 +58,11 @@ const UploadComponent = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <input type="file" onChange={handleInputChange} />
+        <input
+          type="file"
+          onChange={handleInputChange}
+          accept={AllowableFileTypeEnum.PDF}
+        />
         <button onClick={() => void handleOnClick()}>Upload</button>
         <progress value={progress} max={1} />
         <Link href={downloadURL ?? ""} target="_blank">
