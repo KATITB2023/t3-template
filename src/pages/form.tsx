@@ -58,11 +58,9 @@ const UploadComponent = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <form>
-          <input type="file" onChange={handleInputChange} />
-          <button onClick={() => void handleOnClick()}>Upload</button>
-          <progress value={progress} max={1} />
-        </form>
+        <input type="file" onChange={handleInputChange} />
+        <button onClick={() => void handleOnClick()}>Upload</button>
+        <progress value={progress} max={1} />
         <Link href={downloadURL ?? ""} target="_blank">
           Download
         </Link>
