@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -16,15 +16,20 @@ async function main() {
   switch (environment) {
     case "development":
       /** data for your development */
-      await prisma.$transaction(async (tx) => {
-        const user = await tx.user.create({
-          data: {
-            nim: "13520029",
-            passwordHash: await hash("password", 10),
-          },
-        });
-        console.log(user);
-      });
+      await prisma.$transaction(
+        async (tx) => {
+          const user = await tx.user.create({
+            data: {
+              nim: "13520065",
+              passwordHash: await hash("password", 10),
+            },
+          });
+          console.log(user);
+        },
+        {
+          isolationLevel: Prisma.TransactionIsolationLevel.ReadUncommitted, // Serializable for unversioned transactions
+        }
+      );
       break;
     case "test":
       /** data for your test environment */
