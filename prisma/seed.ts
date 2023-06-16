@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 import { hash } from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -15,13 +15,14 @@ async function main() {
 
   switch (environment) {
     case "development":
-      /** data for your development */
+      /** Data for your development */
       await prisma.$transaction(
         async (tx) => {
           const user = await tx.user.create({
             data: {
               nim: "13520065",
               passwordHash: await hash("password", 10),
+              role: UserRole.ADMIN,
             },
           });
           console.log(user);
@@ -32,7 +33,7 @@ async function main() {
       );
       break;
     case "test":
-      /** data for your test environment */
+      /** Data for your test environment */
       break;
     default:
       break;
