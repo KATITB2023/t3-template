@@ -29,7 +29,7 @@ export const storageRouter = createTRPCRouter({
       await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
-          method: ["GET", "PUT"],
+          method: ["GET", "PUT", "DELETE"],
           origin: ["*"],
           responseHeader: ["Content-Type"],
         },
@@ -67,7 +67,7 @@ export const storageRouter = createTRPCRouter({
       await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
-          method: ["GET", "PUT"],
+          method: ["GET", "PUT", "DELETE"],
           origin: ["*"],
           responseHeader: ["Content-Type"],
         },
@@ -85,6 +85,40 @@ export const storageRouter = createTRPCRouter({
       return {
         url,
         sanitizedFilename,
+      };
+    }),
+
+  generateURLForDelete: protectedProcedure
+    .input(
+      z.object({
+        folder: z.union([
+          z.literal(FolderEnum.PROFILE),
+          z.literal(FolderEnum.ASSIGNMENT),
+        ]),
+        filename: z.string(),
+        contentType: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await bucket.setCorsConfiguration([
+        {
+          maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
+          method: ["GET", "PUT", "DELETE"],
+          origin: ["*"],
+          responseHeader: ["Content-Type"],
+        },
+      ]);
+
+      const ref = bucket.file(`${input.folder}/${input.filename}`);
+
+      const [url] = await ref.getSignedUrl({
+        version: "v4",
+        action: "delete",
+        expires: Date.now() + env.URL_EXPIRATION_TIME,
+      });
+
+      return {
+        url,
       };
     }),
 });
