@@ -26,7 +26,7 @@ const UploadComponent = () => {
     await uploadFile(uploadURL, file, (event) => {
       if (!event.total) return;
 
-      const newProgress = Math.round((event.loaded * 100) / event.total);
+      const newProgress = event.loaded / event.total;
       setProgress(newProgress);
     });
 
@@ -60,8 +60,8 @@ const UploadComponent = () => {
       <main>
         <input type="file" onChange={handleInputChange} />
         <button onClick={() => void handleOnClick()}>Upload</button>
-        <p>Progress: {progress}</p>
-        <Link href={downloadURL ?? ""} target="_blank" download>
+        <p>Progress: {100 * progress}%</p>
+        <Link href={downloadURL ?? ""} target="_blank">
           Download
         </Link>
       </main>
