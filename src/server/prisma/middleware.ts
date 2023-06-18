@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { type Prisma } from "@prisma/client";
 
 export const softDeleteChangeFind: Prisma.Middleware = async (params, next) => {
@@ -12,21 +14,16 @@ export const softDeleteChangeFind: Prisma.Middleware = async (params, next) => {
   ) {
     // Add 'isDeleted' filter
     // ID filter maintained
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.where !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (params.args.where.isDeleted === undefined) {
         // Exclude isDeleted records if they have not been explicitly requested
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         params.args.where["isDeleted"] = false;
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args["where"] = { isDeleted: false };
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await next(params);
 };
 
@@ -45,17 +42,13 @@ export const softDeleteChangeUpdate: Prisma.Middleware = async (
   ) {
     // Add 'isDeleted' filter
     // ID filter maintained
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.where !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args.where["isDeleted"] = false;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args["where"] = { isDeleted: false };
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await next(params);
 };
 
@@ -79,27 +72,20 @@ export const softDeleteChangeDelete: Prisma.Middleware = async (
 
     // Add 'isDeleted' filter
     // ID filter maintained
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.where !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args.where["isDeleted"] = false;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args["where"] = { isDeleted: false };
     }
 
     // Set isDeleted to true
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.data !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args.data["isDeleted"] = true;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args["data"] = { isDeleted: true };
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await next(params);
 };
 
@@ -117,16 +103,12 @@ export const versioningChangeUpdate: Prisma.Middleware = async (
     params.action === "upsert"
   ) {
     // Increment version
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (params.args.data !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args.data["version"] = { increment: 1 };
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       params.args["data"] = { version: { increment: 1 } };
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await next(params);
 };
