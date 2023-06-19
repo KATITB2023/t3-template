@@ -1,8 +1,15 @@
 import { parseArgs } from "node:util";
+import path from "path";
+import fs from "fs";
 import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 import { hash } from "bcrypt";
+import { parse } from "csv-parse";
 
 const prisma = new PrismaClient();
+
+interface RawCSVData {
+  message: string;
+}
 
 async function main() {
   const {
@@ -32,8 +39,33 @@ async function main() {
         }
       );
       break;
-    case "test":
+    case "production":
       /** Data for your test environment */
+      const csvFilePath = path.resolve(__dirname, "data/examples.csv");
+      const fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" });
+
+      parse(
+        fileContent,
+        {
+          delimiter: ",",
+          columns: Object.keys({ message: new String() } as RawCSVData),
+        },
+        async (err, records: RawCSVData[]) => {
+          if (err) console.error(err);
+
+          const examples = await Promise.all(
+            records.map(async (record) => {
+              return await prisma.example.create({
+                data: {
+                  message: record.message,
+                },
+              });
+            })
+          );
+
+          console.log(examples);
+        }
+      );
       break;
     default:
       break;
