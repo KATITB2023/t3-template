@@ -27,3 +27,17 @@ export const uploadFile = async (
     onUploadProgress,
   });
 };
+
+export const downloadFile = async (
+  url: string,
+  onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
+) => {
+  const axiosInstance = axios.create();
+
+  const response = await axiosInstance.get<Blob>(url, {
+    responseType: "blob",
+    onDownloadProgress,
+  });
+
+  return response.data;
+};
