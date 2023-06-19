@@ -9,7 +9,6 @@ export enum AllowableFileTypeEnum {
   PDF = "application/pdf",
   PNG = "image/png",
   JPEG = "image/jpeg",
-  JPG = "image/jpg",
 }
 
 export const uploadFile = async (
