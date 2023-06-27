@@ -14,14 +14,12 @@ export const storageRouter = createTRPCRouter({
   generateURLForDownload: publicProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.ASSIGNMENT),
-        ]),
+        folder: z.nativeEnum(FolderEnum),
         filename: z.string(),
       })
     )
     .mutation(async ({ input }) => {
+      // TODO: Cukup panggil di awal saja
       await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
@@ -47,17 +45,9 @@ export const storageRouter = createTRPCRouter({
   generateURLForUpload: protectedProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.ASSIGNMENT),
-        ]),
+        folder: z.nativeEnum(FolderEnum),
         filename: z.string(),
-        contentType: z.union([
-          z.literal(AllowableFileTypeEnum.PDF),
-          z.literal(AllowableFileTypeEnum.PNG),
-          z.literal(AllowableFileTypeEnum.JPEG),
-          z.literal(AllowableFileTypeEnum.JPG),
-        ]),
+        contentType: z.nativeEnum(AllowableFileTypeEnum),
       })
     )
     .mutation(async ({ input }) => {
@@ -65,6 +55,7 @@ export const storageRouter = createTRPCRouter({
       const sanitizedFileName = sanitize(input.filename);
       const sanitizedFilename = `${fileUUID}-${sanitizedFileName}`;
 
+      // TODO: Cukup panggil di awal saja
       await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
@@ -92,14 +83,12 @@ export const storageRouter = createTRPCRouter({
   generateURLForDelete: protectedProcedure
     .input(
       z.object({
-        folder: z.union([
-          z.literal(FolderEnum.PROFILE),
-          z.literal(FolderEnum.ASSIGNMENT),
-        ]),
+        folder: z.nativeEnum(FolderEnum),
         filename: z.string(),
       })
     )
     .mutation(async ({ input }) => {
+      // TODO: Cukup panggil di awal saja
       await bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
