@@ -5,17 +5,17 @@ import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
+import { useRouter } from "next/router";
 import { getCsrfToken, signIn } from "next-auth/react";
 import Layout from "~/layout";
-import { useRouter } from "next/router";
 
 /**
  * Schema can be defined on a shared folder
  * in order to be accessed by both client and server.
  */
 const schema = z.object({
-  nim: z.string(),
-  password: z.string(),
+  nim: z.string().length(8),
+  password: z.string().min(8).max(32),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -32,7 +32,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function SignIn({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { control, handleSubmit } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       nim: "13520065",
@@ -71,6 +75,8 @@ export default function SignIn({
           control={control}
           render={({ field }) => <input {...field} />}
         />
+        {errors.nim && <p role="alert">{errors.nim.message}</p>}
+        {errors.password && <p role="alert">{errors.password.message}</p>}
         <input type="submit" />
       </form>
     </Layout>
