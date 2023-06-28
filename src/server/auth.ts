@@ -97,25 +97,25 @@ export const authOptions: NextAuthOptions = {
         // Add logic here to look up the user from the credentials supplied
         // You can also use the `req` object to access additional parameters
         // return { id: 1, name: "J Smith", email: "jsmith@example" };
-        if (!credentials) {
-          throw new Error("No credentials");
-        }
+        if (!credentials) throw new Error("Credentials not provided");
 
         const { nim, password } = credentials;
+        if (!nim || !password) throw new Error("NIM or password not provided");
 
         const user = await prisma.user.findUnique({
           where: {
             nim,
           },
+          select: {
+            id: true,
+            role: true,
+            passwordHash: true,
+          },
         });
-        if (!user) {
-          throw new Error("User hasn't registered yet");
-        }
+        if (!user) throw new Error("User not found");
 
         const isValid = await compare(password, user.passwordHash);
-        if (!isValid) {
-          throw new Error("Invalid password");
-        }
+        if (!isValid) throw new Error("Password is incorrect");
 
         return {
           id: user.id,
@@ -124,6 +124,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: "/sign-in",
+  },
 };
 
 /**
