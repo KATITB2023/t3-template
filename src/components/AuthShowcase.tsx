@@ -1,4 +1,6 @@
+import { UserRole } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { match } from "ts-pattern";
 import { api } from "~/utils/api";
 
 const AuthShowcase: React.FC = () => {
@@ -9,13 +11,19 @@ const AuthShowcase: React.FC = () => {
     { enabled: sessionData?.user !== undefined }
   );
 
+  const displayRole = (role: UserRole) =>
+    match(role)
+      .with(UserRole.ADMIN, () => "admin")
+      .with(UserRole.USER, () => "user")
+      .exhaustive();
+
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && (
           <span>
             Logged in as user with id {sessionData.user.id} and role{" "}
-            {sessionData.user.role}
+            {displayRole(sessionData.user.role)}
           </span>
         )}
       </p>
