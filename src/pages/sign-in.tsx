@@ -60,7 +60,7 @@ export default function SignIn({
 
   return (
     <Layout title="Sign In">
-      <form onSubmit={void handleSubmit(onSubmit)}>
+      <form onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
         <Controller
           name="nim"
           control={control}
