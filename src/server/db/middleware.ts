@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { type Prisma } from "@prisma/client";
+import { type Example, type User, type Prisma } from "@prisma/client";
 
-export const softDeleteChangeFind: Prisma.Middleware = async (params, next) => {
+export const softDeleteChangeFind: Prisma.Middleware<Example | User> = async (
+  params,
+  next
+) => {
   if (!params.args) {
     params.args = {};
   }
@@ -27,7 +29,7 @@ export const softDeleteChangeFind: Prisma.Middleware = async (params, next) => {
   return await next(params);
 };
 
-export const softDeleteChangeUpdate: Prisma.Middleware = async (
+export const softDeleteChangeUpdate: Prisma.Middleware<Example | User> = async (
   params,
   next
 ) => {
@@ -52,7 +54,7 @@ export const softDeleteChangeUpdate: Prisma.Middleware = async (
   return await next(params);
 };
 
-export const softDeleteChangeDelete: Prisma.Middleware = async (
+export const softDeleteChangeDelete: Prisma.Middleware<Example | User> = async (
   params,
   next
 ) => {
@@ -89,7 +91,7 @@ export const softDeleteChangeDelete: Prisma.Middleware = async (
   return await next(params);
 };
 
-export const versioningChangeUpdate: Prisma.Middleware = async (
+export const versioningChangeUpdate: Prisma.Middleware<Example | User> = async (
   params,
   next
 ) => {

@@ -7,7 +7,6 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { AllowableFileTypeEnum, FolderEnum } from "~/utils/file";
-import { bucket } from "~/server/bucket";
 import { env } from "~/env.mjs";
 
 export const storageRouter = createTRPCRouter({
@@ -18,9 +17,9 @@ export const storageRouter = createTRPCRouter({
         filename: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       // TODO: Cukup panggil di awal saja
-      await bucket.setCorsConfiguration([
+      await ctx.bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
           method: ["GET", "PUT", "DELETE"],
@@ -29,7 +28,7 @@ export const storageRouter = createTRPCRouter({
         },
       ]);
 
-      const ref = bucket.file(`${input.folder}/${input.filename}`);
+      const ref = ctx.bucket.file(`${input.folder}/${input.filename}`);
 
       const [url] = await ref.getSignedUrl({
         version: "v4",
@@ -50,13 +49,13 @@ export const storageRouter = createTRPCRouter({
         contentType: z.nativeEnum(AllowableFileTypeEnum),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const fileUUID = uuidv4();
       const sanitizedFileName = sanitize(input.filename);
       const sanitizedFilename = `${fileUUID}-${sanitizedFileName}`;
 
       // TODO: Cukup panggil di awal saja
-      await bucket.setCorsConfiguration([
+      await ctx.bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
           method: ["GET", "PUT", "DELETE"],
@@ -65,7 +64,7 @@ export const storageRouter = createTRPCRouter({
         },
       ]);
 
-      const ref = bucket.file(`${input.folder}/${sanitizedFilename}`);
+      const ref = ctx.bucket.file(`${input.folder}/${sanitizedFilename}`);
 
       const [url] = await ref.getSignedUrl({
         version: "v4",
@@ -87,9 +86,9 @@ export const storageRouter = createTRPCRouter({
         filename: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       // TODO: Cukup panggil di awal saja
-      await bucket.setCorsConfiguration([
+      await ctx.bucket.setCorsConfiguration([
         {
           maxAgeSeconds: env.BUCKET_CORS_EXPIRATION_TIME,
           method: ["GET", "PUT", "DELETE"],
@@ -98,7 +97,7 @@ export const storageRouter = createTRPCRouter({
         },
       ]);
 
-      const ref = bucket.file(`${input.folder}/${input.filename}`);
+      const ref = ctx.bucket.file(`${input.folder}/${input.filename}`);
 
       const [url] = await ref.getSignedUrl({
         version: "v4",

@@ -4,7 +4,8 @@ import {
   softDeleteChangeUpdate,
   softDeleteChangeDelete,
   versioningChangeUpdate,
-} from "~/server/prisma/middleware";
+} from "~/server/db/middleware";
+import { otelSetup } from "~/server/db/setup";
 import { env } from "~/env.mjs";
 
 // This is a helper function that instantiates Prisma
@@ -13,6 +14,9 @@ const instantiatePrisma = () => {
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
+
+  // Register OpenTelemetry
+  otelSetup();
 
   // Add middleware to handle soft deletes
   // Comment this out to disable soft deletes

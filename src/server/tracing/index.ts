@@ -1,5 +1,5 @@
 import { type Tracer, trace } from "@opentelemetry/api";
-import { otelSetup } from "~/server/logger/setup";
+import { otelSetup } from "~/server/db/setup";
 
 // This is a helper function that instantiates OpenTelemetry Tracer
 const instantiateTracer = () => {
