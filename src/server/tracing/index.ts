@@ -1,12 +1,7 @@
 import { type Tracer, trace } from "@opentelemetry/api";
-import { otelSetup } from "~/server/db/setup";
 
 // This is a helper function that instantiates OpenTelemetry Tracer
-const instantiateTracer = () => {
-  otelSetup();
-
-  return trace.getTracer("server");
-};
+const instantiateTracer = () => trace.getTracer("server");
 
 const globalForTracer = globalThis as unknown as {
   tracer: Tracer | undefined;
