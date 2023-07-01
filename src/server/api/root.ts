@@ -1,5 +1,5 @@
 import { exampleRouter } from "~/server/api/routers/example";
-import { storageRouter } from "./routers/storage";
+import { storageRouter } from "~/server/api/routers/storage";
 import { createTRPCRouter } from "~/server/api/trpc";
 
 /**
