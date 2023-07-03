@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { motion } from "framer-motion";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 interface Props {
   title: string;
@@ -20,6 +21,11 @@ export default function Layout({ title, children }: Props) {
         transition={{ duration: 0.5 }}
       >
         {children}
+        {process.env.NODE_ENV !== "production" && (
+          <div className="hidden md:block">
+            <ReactQueryDevtools initialIsOpen={false} />
+          </div>
+        )}
       </motion.div>
     </>
   );
