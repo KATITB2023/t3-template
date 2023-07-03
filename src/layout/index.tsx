@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 interface Props {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Layout({ title, children }: Props) {
